@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import { getUsersModel, addUserModel } from "../models/models.js";
 
 const app = express();
 app.use(cookieParser());
@@ -13,7 +14,6 @@ dotenv.config();
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
-
 
 const getIndex = (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "pages", "index.html"));
@@ -59,55 +59,61 @@ const postLogin = (req, res) => {
   }
 };
 
-/* const getProtected = (req, res) => {
-  const token = req.cookies.cook; // Accede a la cookie "cook"
-  if (!token) {
-    return res.status(401).send("No autorizado");
-  }
-  jwt.verify(token, process.env.SECRETKEY, (err, decoded) => {
-    if (err) {
-      return res.status(401).send("Sin Autorización");
+//NEW USERS
+const postNewUser = (req, res) => {
+  const data = req.body;
+      // { newMail: 'asd@aasdas.com', newUser: 'saf', newPass: 'asg' }
+  try {
+    const stmt = db.prepare("SELECT * FROM users WHERE user =?");
+    const row = stmt.get(data.newUser);
+    if (row) {
+      return res.status(409).send("El usuario ya existe");
     } else {
-      // Acceso permitido
-      console.log(decoded);
-      if (decoded.role === "Administrador") {
-        return res.json({ redirect: '/admin' });
-      }
+      bcrypt.hash(data.newPass, 10, function (err, hash) {
+        if (err) {
+          console.log(err);
+          return res.status(404).send("Error Al crear la contraseña");
+        }
+        data.newPass = hash;        
+        const query = addUserModel(data.newUser, data.newMail, data.newPass)  
+        if(query){
+          return res.status(200).send('Usuario creado correctamente');
+        }else{
+          return res.status(404).send("Error Al crear el usuario");
+        }
+      });
     }
-  });
-};
-
-const getAdmin = (req, res) => {
-  const token = req.cookies.cook; // Accede a la cookie "cook"
-  if (!token) {
-    return res.status(401).send("No autorizado");
+  } catch (err) {
+    return console.error(err);
   }
-  jwt.verify(token, process.env.SECRETKEY, (err, decoded) => {
-    if (err) {
-      return res.status(401).send("Sin Autorización");
-    }
-  })
-  res.sendFile(path.join(__dirname, "..", "public", "pages", "admin.html"));
-}; */
+};
 
 const getProtected = (req, res) => {
-  console.log(req.user)
   const { username, role } = req.user; // Datos del token decodificado
-  if(role === 'Administrador'){
-
-    res.json({ user:username, redirect: '/admin' });
+  if (role === "Administrador") {
+    res.json({ redirect: "/admin" });
   }
 };
 
+// ADMIN
 const getAdmin = (req, res) => {
   const { role } = req.user;
 
-  if (role !== 'Administrador') {
-    return res.status(403).json({ error: 'Acceso denegado. Solo para administradores.' });
+  if (role !== "Administrador") {
+    return res.status(403).send("Acceso denegado");
   }
 
-  res.sendFile(path.join(__dirname, '..', 'public', 'pages', 'admin.html'))
-
+  res.sendFile(path.join(__dirname, "..", "public", "pages", "admin.html"));
 };
 
-export { getIndex, postLogin, getProtected, getAdmin };
+const getUsers = (req, res) => {
+  const { role } = req.user;
+
+  if (role !== "Administrador") {
+    return res.status(403).json({ error: "Acceso denegado" });
+  }
+  const users = getUsersModel();
+  res.json(users);
+};
+
+export { getIndex, postLogin, postNewUser, getProtected, getAdmin, getUsers };
