@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../style/login.css">
+</head>
+<body>
+    <div class="contein-login">
+      <div class="log-form contein-login" id="conteinLogin">
+        <h2>Ingrese a su Cuenta</h2>
+        <form id="formLogin">
+
+          <input type="text" title="username" placeholder="Usuario" name="user" id="userInput" />
+          <div id="errorMessageUser" class="error-message"></div>
+    
+          <input type="password" title="password" placeholder="Contraseña" name="pass" id="passInput" />
+          <div id="errorMessagePass" class="error-message"></div>
+    
+          <div id="errorMessage" class="error-message"></div>
+
+          <button type="submit" class="btn">Ingresar</button>
+
+          <div class="links-contein">
+            <a class="a-links new-user" href="./newuser.html" id="linkNewUser">Crear Nuevo Usuario</a>
+            <a class="a-links forgot" href="./forgot.html">¿Olvidó su Contraseña?</a>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+    <script src="../script/login.js"></script>   
+</body>
+</html>

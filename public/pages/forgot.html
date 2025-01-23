@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="./style/login.css">
+</head>
+<body>
+    <div class="contein-login">
+      <div class="log-form contein-login" id="conteinLogin">
+        <h2>Recupere su contraseña</h2>
+        <form action="/forgot" method="" id="fromForgot">
+
+          <input type="text" title="username" placeholder="Usuario" name="user" id="user" />
+          <div id="errorMessageUser" class="error-message"></div>
+
+          <input type="email" title="email" placeholder="Email" name="mail" id="email" />
+          <div id="errorMessageMail" class="error-message"></div>
+    
+          <input type="password" title="password" placeholder="Nueva Contraseña" name="pass" id="pass" class="" />
+          <div id="errorMessagePass" class="error-message"></div>
+    
+          <div id="errorMessage" class="error-message"></div>
+          <button type="submit" class="btn">Editar</button>
+          <div class="links-contein">
+            <a class="a-links iniciar-sesion" href="./login.html" id="linkNewUser">Volver al Inicio de Sesión</a>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script src="./script/forgot.js"></script>   
+</body>
+</html>

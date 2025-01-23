@@ -1,0 +1,141 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|Open+Sans:400,300,600);
+
+:root {
+  --grey: #2a2a2a;
+  --blue: #1fb5bf;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.display-none{
+  display: none !important;
+}
+
+body {
+  font-family: 'open sans', helvetica, arial, sans;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.log-form {
+  width: 40%;
+  min-width: 320px;
+  max-width: 475px;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, .25);
+}
+
+@media(max-width: 40em) {
+  .log-form {
+    width: 95%;
+    position: relative;
+    margin: 2.5% auto 0 auto;
+    left: 0%;
+    transform: translate(0%, 0%);
+  }
+}
+
+.log-form form {
+  display: block;
+  width: 100%;
+  padding: 2em;
+}
+
+.log-form h2 {
+  color: #e6e6e6;
+  font-family: 'open sans condensed';
+  font-size: 1.35em;
+  display: block;
+  background: var(--grey);
+  text-transform: uppercase;
+  padding: .75em 1em .75em 1.5em;
+  box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid #262626;
+  margin: 0;
+  font-weight: 200;
+}
+
+.log-form input {
+  display: block;
+  margin: auto auto;
+  width: 100%;
+  margin-bottom: 2em;
+  padding: .5em 0;
+  border: none;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 1.25em;
+  color: #757575;
+}
+
+.log-form input:focus {
+  outline: none;
+}
+
+.log-form .btn {
+  display: inline-block;
+  background: var(--blue);
+  border: 1px solid #1aa3a9;
+  padding: .5em 2em;
+  color: white;
+  margin-right: .5em;
+  box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.log-form .btn:hover {
+  background: #28c3cd;
+}
+
+.log-form .btn:active {
+  background: var(--blue);
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.log-form .btn:focus {
+  outline: none;
+}
+
+.log-form .links-contein{
+  display: flex;
+  justify-content: space-between;
+}
+
+.log-form .a-links{
+  color: #1ec7d3;
+  line-height: .5em;
+  position: relative;
+  top: 2.5em;
+  text-decoration: none;
+  font-size: .75em;
+  margin: 0;
+  padding: 0 0 20px 0;
+  
+}
+
+.log-form .a-links:hover {
+  color: #1aa3a9; /* darken(@blue, 5%) */
+}
+
+.log-form .error-message {
+  color: red;
+  font-weight: bold;
+  margin: 7px 0;
+  font-size: 10px;
+}
+
+.log-form #errorMessage{
+  margin: 15px 0;
+}
+
+
+
+
+/* ---------------------------------------------------------------------------------------------------------------------------------- */
+/* NEW USER */

@@ -1,0 +1,21 @@
+{
+  "name": "01-login",
+  "version": "0.0.1",
+  "description": "login",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --trace-warnings --experimental-sqlite index.js",
+    "dev": "node --watch --trace-warnings --experimental-sqlite index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Guillermo Novillo",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
