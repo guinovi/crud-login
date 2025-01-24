@@ -39,14 +39,4 @@ Este es un proyecto de ejemplo de un sistema de login y CRUD (Create, Read, Upda
     npm start
     ```
 
-## Uso
 
-### Registro de Usuarios
-
-Para registrar un nuevo usuario, envía una solicitud POST a `/register` con el siguiente payload JSON:
-```json
-{
-    "username": "nuevoUsuario",
-    "email": "usuario@example.com",
-    "password": "contraseñaSegura"
-}
