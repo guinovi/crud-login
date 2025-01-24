@@ -1,32 +1,53 @@
 import sqlite3 from 'sqlite3';
-sqlite3.verbose(); // Configurar verbose directamente
+import { join } from 'path';
+import fs from 'fs';
 
-const DB_PATH = './database.sqlite';
-const db = new sqlite3.Database(DB_PATH);
+sqlite3.verbose(); // Activar modo verbose para depuración
 
+const DB_PATH = './database.sqlite'; // Ruta original de la base de datos
+const DB_TEMP = '/tmp/database.sqlite'; // Ruta temporal para la base de datos
+
+// Verificar si la base de datos existe en la ruta original
+if (!fs.existsSync(DB_PATH)) {
+  console.error(`La base de datos no existe en la ruta: ${DB_PATH}`);
+  process.exit(1); // Finalizar la ejecución si no se encuentra la base de datos
+}
+
+// Copiar la base de datos al directorio temporal si no existe
+if (!fs.existsSync(DB_TEMP)) {
+  fs.copyFileSync(DB_PATH, DB_TEMP);
+  console.log('Base de datos copiada al directorio temporal.');
+} else {
+  console.log('Base de datos ya existe en el directorio temporal.');
+}
+
+// Inicializar conexión con la base de datos desde el directorio temporal
+const db = new sqlite3.Database(DB_TEMP, (err) => {
+  if (err) {
+    console.error('Error al abrir la base de datos:', err.message);
+  } else {
+    console.log('Conexión a la base de datos SQLite establecida.');
+  }
+});
+
+// Opcional: Crear tablas si no existen
 db.serialize(() => {
   db.run(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user TEXT NOT NULL UNIQUE,
-    pass TEXT NOT NULL,
-    role TEXT NOT NULL DEFAULT 'user',
-    email TEXT NOT NULL UNIQUE,
-    rolBool BOOLEAN DEFAULT 0
-  );
-`, (err) => {
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user TEXT NOT NULL UNIQUE,
+      pass TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'user',
+      email TEXT NOT NULL UNIQUE,
+      rolBool BOOLEAN DEFAULT 0
+    );
+  `, (err) => {
     if (err) {
-      return console.error('Error creando la tabla users:', err.message);
+      console.error('Error creando la tabla users:', err.message);
+    } else {
+      console.log('Tabla "users" verificada o creada.');
     }
-    console.log('Db Inicializado');
   });
 });
 
-/* db.close((err) => {
-  if (err) {
-    return console.error('Error cerrando la base de datos:', err.message);
-  }
-  console.log('Base de datos cerrada correctamente.');
-});
- */
 export default db;
