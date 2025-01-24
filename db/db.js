@@ -5,6 +5,8 @@ import fs from 'fs';
 sqlite3.verbose(); // Activar modo verbose para depuración
 
 const DB_PATH = './database.sqlite'; // Ruta original de la base de datos
+
+//VERCEL
 const DB_TEMP = '/tmp/database.sqlite'; // Ruta temporal para la base de datos
 
 // Verificar si la base de datos existe en la ruta original
@@ -30,6 +32,9 @@ const db = new sqlite3.Database(DB_TEMP, (err) => {
   }
 });
 
+
+// ------------------------           DESARROLLO 
+// const db = new sqlite3.Database(DB_PATH)
 // Opcional: Crear tablas si no existen
 db.serialize(() => {
   db.run(`
