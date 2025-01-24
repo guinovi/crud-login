@@ -38,9 +38,9 @@ Puedes ver una demostración en video del funcionamiento del sistema en el sigui
     ```env
     PORT=3000
     SECRET_KEY=tuClaveSecreta
-    USER=admin
-    PASS=admin123
-    ROLE=Administrador
+    USER=nombre_de_usuario_del_administrador
+    PASS=contraseña_para_tu_usuario_del_administrador
+    ROLE=Administrador o usuario
     EMAIL=admin@example.com
     ROLBOOL=true
     ```
