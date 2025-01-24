@@ -1,4 +1,7 @@
 import sqlite3 from 'sqlite3';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 // Crear una base de datos en memoria
 const db = new sqlite3.Database(':memory:', (err) => {
