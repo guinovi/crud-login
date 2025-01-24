@@ -96,10 +96,13 @@ const getProtected = (req, res) => {
   if (role === "Administrador") {
     res.json({ redirect: "/admin" });
   }
+  if(role === "user"){
+    res.json({ redirect: "/user" });
+  }
 };
 
 // ADMIN
-const getAdmin = (req, res) => {
+const getAdminPage = (req, res) => {
   const { role } = req.user;
 
   if (role !== "Administrador") {
@@ -119,4 +122,16 @@ const getUsers = (req, res) => {
   res.json(users);
 };
 
-export { getIndex, postLogin, postNewUser, getProtected, getAdmin, getUsers };
+
+// USER
+
+const getUserPage = (req, res) => {
+  const { role } = req.user;
+
+  if (role!== "user") {
+    return res.status(403).json({ error: "Acceso denegado" });
+  }
+  res.sendFile(path.join(__dirname, "..", "public", "pages", "user.html"));
+};
+
+export { getIndex, postLogin, postNewUser, getProtected, getAdminPage, getUsers, getUserPage };

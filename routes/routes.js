@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getIndex, postLogin, postNewUser, getProtected, getAdmin, getUsers } from '../controllers/controllers.js';
+import { getIndex, postLogin, postNewUser, getProtected, getAdminPage, getUsers, getUserPage } from '../controllers/controllers.js';
 import authMiddleware from '../middlewares/auth.js';
 
 const router = Router();
@@ -10,9 +10,12 @@ router.post('/newUser', postNewUser)
 
 // Rutas protegidas
 router.get('/protected', authMiddleware, getProtected);
-router.get('/admin', authMiddleware, getAdmin);
+router.get('/admin', authMiddleware, getAdminPage);
 
 // ADMIN
 router.get('/getUsers', authMiddleware, getUsers);
+
+//USER
+router.get('/user', authMiddleware, getUserPage);
 
 export default router;
