@@ -36,7 +36,7 @@ document.getElementById('formLogin').addEventListener('submit',(event)=>{
     .then(response => response.json())
     .then(data => {
         if(!data) return errorMessage.textContent ='Error En el Acceso'
-        if(data.error) return errorMessage.textContent = data.error
+        if(data.error) return errorMessage.textContent = 'Usuario no encontrado'
         if(data){
             fetch('/protected', {
                 credentials: 'include',
@@ -51,6 +51,6 @@ document.getElementById('formLogin').addEventListener('submit',(event)=>{
         }
 
     })
-    .catch(err => console.error(err));
+    .catch(err => errorMessage.textContent = 'Usuario no encontrado')
 
 })

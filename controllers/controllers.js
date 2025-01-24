@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { getUsersModel, addUserModel } from "../models/models.js";
+import { getUserModel, getUserEmailModel,addNewUserModel, getUsersModel } from "../models/models.js";
 
 const app = express();
 app.use(cookieParser());
@@ -21,9 +21,17 @@ const getIndex = (req, res) => {
 
 const postLogin = (req, res) => {
   const { user, pass } = req.body;
-  try {
-    const stmt = db.prepare("SELECT * FROM users WHERE user =?");
-    const row = stmt.get(user);
+
+  getUserModel(user, (err, row) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error al buscar el usuario");
+    }
+
+    if (!row) {
+      return res.status(404).send("Usuario no encontrado");
+    }
+
     if (row) {
       //HASS BCRYPT
       bcrypt.compare(pass, row.pass, function (err, result) {
@@ -54,41 +62,39 @@ const postLogin = (req, res) => {
       console.error("error");
       return res.status(500).send("Error al iniciar sesion");
     }
-  } catch (err) {
-    return console.error(err);
-  }
+  });
 };
 
 //NEW USERS
 const postNewUser = (req, res) => {
   const data = req.body;
-      // { newMail: 'asd@aasdas.com', newUser: 'saf', newPass: 'asg' }
-  try {
-   /*  const stmt = db.prepare("SELECT * FROM users WHERE user =?");
-    const row = stmt.get(data.newUser); */
-    const stmt = db.prepare("SELECT * FROM users WHERE user = ? OR email = ?"); 
-    const row = stmt.get(data.newUser, data.newMail)
-    if (row) {
+  getUserEmailModel(data.newUser, data.newMail, (err, row)=>{
+    if(err){
+      console.error(err);
+      return res.status(500).send("Error al buscar el usuario o email");
+    }
+    if(row){
       return res.status(409).send("El usuario o email ya existe");
-    } else {
+    }
+    if(!row){
       bcrypt.hash(data.newPass, 10, function (err, hash) {
         if (err) {
           console.log(err);
           return res.status(404).send("Error Al crear la contraseña");
         }
-        data.newPass = hash;        
-        const query = addUserModel(data.newUser, data.newMail, data.newPass)  
-        if(query){
-          return res.status(200).send('Usuario creado correctamente');
-        }else{
-          return res.status(404).send("Error Al crear el usuario");
-        }
+        data.newPass = hash;
+        addNewUserModel(data.newUser, data.newMail,data.newPass, (err, result)=>{
+          if(err){
+            console.error(err);
+            return res.status(500).send("Error al insertar el usuario");
+          }
+          console.log(result);
+          return res.status(200).send("Usuario creado correctamente");
+        })
       });
+
     }
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send('Error')
-  }
+  })
 };
 
 const getProtected = (req, res) => {
@@ -96,7 +102,7 @@ const getProtected = (req, res) => {
   if (role === "Administrador") {
     res.json({ redirect: "/admin" });
   }
-  if(role === "user"){
+  if (role === "user") {
     res.json({ redirect: "/user" });
   }
 };
@@ -114,24 +120,36 @@ const getAdminPage = (req, res) => {
 
 const getUsers = (req, res) => {
   const { role } = req.user;
-
   if (role !== "Administrador") {
     return res.status(403).json({ error: "Acceso denegado" });
   }
-  const users = getUsersModel();
-  res.json(users);
+  getUsersModel((err, users) => {
+    if (err || !users) {
+      console.error(err);
+      return res.status(500).json({ error: "Error al obtener los usuarios" });
+    }
+    res.json(users);
+  })
 };
 
 
-// USER
 
+
+// USER
 const getUserPage = (req, res) => {
   const { role } = req.user;
-
-  if (role!== "user") {
+  if (role !== "user") {
     return res.status(403).json({ error: "Acceso denegado" });
   }
   res.sendFile(path.join(__dirname, "..", "public", "pages", "user.html"));
 };
 
-export { getIndex, postLogin, postNewUser, getProtected, getAdminPage, getUsers, getUserPage };
+export {
+  getIndex,
+  postLogin,
+  postNewUser,
+  getProtected,
+  getAdminPage,
+  getUsers,
+  getUserPage,
+};

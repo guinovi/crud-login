@@ -1,40 +1,46 @@
 import db from "../db/db.js";
 
-// Función para agregar un usuario
-export const addUserModel = (name, email, pass) => {
-  try {
-    const stmt = db.prepare(
-      "INSERT INTO users (user, email, pass) VALUES (?, ?, ?)"
-    );
-    stmt.run(name, email, pass);
-    return true;
-  } catch (error) {
-    return false;
-  }
+export const getUserModel = (user, callback) => {
+  db.get(`SELECT * FROM users WHERE user = ?`, [user], (err, row) => {
+    if (err) {
+      return callback(err, null);
+    }
+    callback(null, row);
+  });
 };
+
+
+export const getUserEmailModel = (user, email, callback) => {
+  db.get(`SELECT * FROM users WHERE user = ? OR email = ?`, [user, email], (err, row) => {
+    if (err) {
+      return callback(err, null);
+    }
+    callback(null, row);
+  });
+};
+
+
+export const addNewUserModel = (user, email, contraseña, callback) => {
+  db.run("INSERT INTO users (user, email, pass) VALUES (?, ?, ?)", [user, email, contraseña], (err, result) => {
+    if (err) {
+      return callback(err, null);
+    }
+    callback(null, result);
+  })
+}
+
+
 
 // Función para obtener todos los usuarios
-export const getUsersModel = () => {
-  const stmt = db.prepare("SELECT id,user,role,email FROM users");
-  return stmt.all();
+export const getUsersModel = (callback) => {
+  db.all("SELECT id,user,role,email FROM users where rolBool = 0",(err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, result);
+  })
 };
 
-export const createUserModel = (req, res) => {
-  const { name, email } = req.body;
 
-  try {
-    addUser(name, email);
-    res.status(201).json({ message: "Usuario creado correctamente." });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
-export const listUserModel = (req, res) => {
-  try {
-    const users = getUsers();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+

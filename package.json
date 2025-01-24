@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --trace-warnings --experimental-sqlite index.js",
-    "dev": "node --watch --trace-warnings --experimental-sqlite index.js",
+    "start": "node index.js",
+    "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Guillermo Novillo",

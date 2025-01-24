@@ -1,26 +1,32 @@
-import { DatabaseSync } from "node:sqlite";
-import { openSync } from "node:fs";
+import sqlite3 from 'sqlite3';
+sqlite3.verbose(); // Configurar verbose directamente
 
-const DB_PATH = "./database.sqlite"; // Ruta de tu archivo SQLite
+const DB_PATH = './database.sqlite';
+const db = new sqlite3.Database(DB_PATH);
 
-// Verifica si el archivo de la base de datos existe o crea uno nuevo
-// const dbFile = openSync(DB_PATH);
-
-// Abre una conexión a la base de datos en modo síncrono
-const db = new DatabaseSync(DB_PATH);
-
-// Configuración inicial de la base de datos
-db.exec(`
+db.serialize(() => {
+  db.run(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user TEXT NOT NULL,
+    user TEXT NOT NULL UNIQUE,
     pass TEXT NOT NULL,
-    role TEXT NOT NULL UNIQUE,
-    email text NOT NULL,
+    role TEXT NOT NULL DEFAULT 'user',
+    email TEXT NOT NULL UNIQUE,
     rolBool BOOLEAN DEFAULT 0
   );
-`);
+`, (err) => {
+    if (err) {
+      return console.error('Error creando la tabla users:', err.message);
+    }
+    console.log('Db Inicializado');
+  });
+});
 
-console.log("Base de datos inicializada correctamente.");
-
+/* db.close((err) => {
+  if (err) {
+    return console.error('Error cerrando la base de datos:', err.message);
+  }
+  console.log('Base de datos cerrada correctamente.');
+});
+ */
 export default db;
