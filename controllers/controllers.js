@@ -64,10 +64,12 @@ const postNewUser = (req, res) => {
   const data = req.body;
       // { newMail: 'asd@aasdas.com', newUser: 'saf', newPass: 'asg' }
   try {
-    const stmt = db.prepare("SELECT * FROM users WHERE user =?");
-    const row = stmt.get(data.newUser);
+   /*  const stmt = db.prepare("SELECT * FROM users WHERE user =?");
+    const row = stmt.get(data.newUser); */
+    const stmt = db.prepare("SELECT * FROM users WHERE user = ? OR email = ?"); 
+    const row = stmt.get(data.newUser, data.newMail)
     if (row) {
-      return res.status(409).send("El usuario ya existe");
+      return res.status(409).send("El usuario o email ya existe");
     } else {
       bcrypt.hash(data.newPass, 10, function (err, hash) {
         if (err) {
@@ -84,7 +86,8 @@ const postNewUser = (req, res) => {
       });
     }
   } catch (err) {
-    return console.error(err);
+    console.error(err);
+    return res.status(500).send('Error')
   }
 };
 
